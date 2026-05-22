@@ -1,0 +1,38 @@
+version: 2
+
+models:
+  - name: mart_county_health
+    description: >
+      Wide county health table: one row per county per year, with age-adjusted
+      prevalence for all 40 PLACES measures as individual columns grouped by category.
+      Materialized as a table for fast dashboard queries. Built from int_places_measures,
+      which filters to age-adjusted prevalence only.
+    columns:
+      - name: locationid
+        description: "5-digit FIPS county code."
+        data_tests:
+          - not_null
+      - name: year
+        description: "Survey data year."
+        data_tests:
+          - not_null
+      - name: locationname
+        description: "County name."
+        data_tests:
+          - not_null
+      - name: stateabbr
+        description: "2-letter state abbreviation."
+        data_tests:
+          - not_null
+      - name: totalpopulation
+        description: "Total county population."
+      - name: diabetes_pct
+        description: "Age-adjusted prevalence of diabetes among adults (%)."
+      - name: obesity_pct
+        description: "Age-adjusted prevalence of obesity among adults (%)."
+      - name: depression_pct
+        description: "Age-adjusted prevalence of depression among adults (%)."
+      - name: current_smoking_pct
+        description: "Age-adjusted prevalence of current cigarette smoking among adults (%)."
+      - name: physical_inactivity_pct
+        description: "Age-adjusted prevalence of physical inactivity among adults (%)."

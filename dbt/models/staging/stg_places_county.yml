@@ -1,0 +1,51 @@
+version: 2
+
+models:
+  - name: stg_places_county
+    description: >
+      Cleaned and typed CDC PLACES county data. All VARCHAR fields from the raw layer
+      are cast to correct types. Socrata internal columns and the geolocation struct
+      are dropped. Both age-adjusted and crude prevalence rows are preserved (229k rows).
+    columns:
+      - name: locationid
+        description: "5-digit FIPS county code."
+        data_tests:
+          - not_null
+      - name: year
+        description: "Survey data year as integer."
+        data_tests:
+          - not_null
+      - name: measureid
+        description: "Short measure code (e.g., DIABETES, ARTHRITIS)."
+        data_tests:
+          - not_null
+      - name: datavaluetypeid
+        description: "Value type: AgeAdjPrv (age-adjusted) or CrdPrv (crude)."
+        data_tests:
+          - not_null
+          - accepted_values:
+              name: accepted_values_datavaluetypeid
+              values: ["AgeAdjPrv", "CrdPrv"]
+      - name: category
+        description: "Measure category group."
+        data_tests:
+          - not_null
+          - accepted_values:
+              name: accepted_values_category
+              values:
+                - "Disability"
+                - "Health Outcomes"
+                - "Health Risk Behaviors"
+                - "Health Status"
+                - "Health-Related Social Needs"
+                - "Prevention"
+      - name: data_value
+        description: "Prevalence estimate as a double. Null when CDC suppresses the estimate."
+      - name: low_confidence_limit
+        description: "Lower bound of the 95% confidence interval."
+      - name: high_confidence_limit
+        description: "Upper bound of the 95% confidence interval."
+      - name: totalpopulation
+        description: "Total county population."
+      - name: totalpop18plus
+        description: "County population aged 18 and over."

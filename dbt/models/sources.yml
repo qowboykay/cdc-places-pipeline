@@ -1,0 +1,26 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    description: "Raw CDC PLACES data loaded by the Python extract/load pipeline."
+    tables:
+      - name: places_county
+        description: >
+          County-level public health estimates, CDC PLACES 2025 release.
+          229k rows: 3,145 counties x 40 measures x 2 value types
+          (age-adjusted and crude prevalence). All fields are VARCHAR as loaded;
+          casting happens in the staging layer.
+        columns:
+          - name: locationid
+            description: "5-digit FIPS county code."
+          - name: year
+            description: "Survey data year as a string (2022 or 2023 in this release)."
+          - name: measureid
+            description: "Short measure code (e.g., DIABETES, ARTHRITIS, OBESITY)."
+          - name: datavaluetypeid
+            description: "AgeAdjPrv (age-adjusted prevalence) or CrdPrv (crude prevalence)."
+          - name: data_value
+            description: "Prevalence estimate as a string percentage. Null if CDC suppressed the value."
+          - name: geolocation
+            description: "County centroid as a GeoJSON-style struct. Dropped in staging."

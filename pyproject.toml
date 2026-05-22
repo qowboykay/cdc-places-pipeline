@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "ELT pipeline for CDC PLACES public health data: Socrata API -> S3 -> Snowflake -> dbt -> Streamlit"
 readme = "README.md"
 license = { file = "LICENSE" }
-requires-python = ">=3.11"
+requires-python = ">=3.11,<3.14"
 dependencies = [
     "requests>=2.32",
     "sodapy>=2.2",
