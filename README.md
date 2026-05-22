@@ -3,7 +3,7 @@
 ELT pipeline ingesting CDC PLACES public health data via the Socrata API into Snowflake, transformed with dbt, and surfaced through a Streamlit dashboard.
 
 [![CI](https://github.com/qowboykay/cdc-places-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/qowboykay/cdc-places-pipeline/actions/workflows/ci.yml)
-![Status](https://img.shields.io/badge/status-Phase%201%20in%20progress-yellow)
+![Status](https://img.shields.io/badge/status-Phase%203%20complete-green)
 
 ---
 
@@ -66,7 +66,36 @@ uv run pre-commit install
 # Run the pipeline (local DuckDB, no cloud required)
 uv run python -m cdc_places_pipeline.cli extract --dataset places_county
 uv run python -m cdc_places_pipeline.cli load --dataset places_county
+
+# Run dbt transformations
+uv run dbt build --project-dir dbt --profiles-dir dbt
 ```
+
+---
+
+## Dashboard
+
+The Streamlit dashboard visualizes age-adjusted prevalence estimates for 40 health measures across 3,100+ US counties.
+
+**Run locally:**
+
+```bash
+uv run streamlit run app/dashboard.py
+```
+
+Open `http://localhost:8501` in your browser.
+
+**Features:**
+
+- Sidebar filters: year, measure category, and specific measure
+- KPI cards: county count, coverage, average and peak prevalence
+- Choropleth map with county-level shading
+- Top-20 counties bar chart
+- Sortable data table with CSV export
+
+![Choropleth map](docs/screenshots/choropleth.png)
+![Top 20 bar chart](docs/screenshots/bar_chart.png)
+![Data table](docs/screenshots/data_table.png)
 
 ---
 
@@ -75,10 +104,12 @@ uv run python -m cdc_places_pipeline.cli load --dataset places_county
 | Phase | Description | Status |
 |---|---|---|
 | 0 | Repo scaffolding | Done |
-| 1 | Local extract + load to DuckDB | In progress |
-| 2 | dbt transformations (DuckDB target) | Pending |
-| 3 | Streamlit dashboard (DuckDB-backed) | Pending |
+| 1 | Local extract + load to DuckDB | Done |
+| 2 | dbt transformations (DuckDB target) | Done |
+| 3 | Streamlit dashboard (DuckDB-backed) | Done |
 | 4 | Promote to AWS + Snowflake | Pending |
+| 5 | CI/CD for cloud pipeline | Pending |
+| 6 | Performance tuning and monitoring | Pending |
 | 7 | Polish, docs, tagged release | Pending |
 
 ---
