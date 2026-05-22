@@ -79,6 +79,7 @@ MEASURES: dict[str, dict[str, str]] = {
 # Data loading
 # ---------------------------------------------------------------------------
 
+
 def _db_path() -> str:
     return os.getenv("DUCKDB_PATH", "data/warehouse.duckdb")
 
