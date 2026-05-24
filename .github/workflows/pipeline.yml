@@ -38,11 +38,17 @@ jobs:
 
       - name: Upload to S3
         id: upload
+        shell: bash
         run: |
+          set -euo pipefail
           stage_path=$(
             uv run python -m cdc_places_pipeline.cli upload --dataset places_county \
             | tail -1 | awk '{print $NF}'
           )
+          if [ -z "$stage_path" ]; then
+            echo "ERROR: stage_path is empty -- upload likely failed"
+            exit 1
+          fi
           echo "stage_path=$stage_path" >> "$GITHUB_OUTPUT"
 
       - name: Load into Snowflake

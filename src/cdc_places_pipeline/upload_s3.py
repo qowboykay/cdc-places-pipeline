@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 from pathlib import Path
 
 import boto3
@@ -21,7 +22,8 @@ def upload_manifest(manifest_path: Path, bucket: str, prefix: str = "raw") -> st
     ts: str = manifest["extract_timestamp"]
     s3_dir = f"{prefix}/{dataset_id}/{ts}"
 
-    s3 = boto3.client("s3")
+    region = os.environ.get("AWS_DEFAULT_REGION", "us-east-2")
+    s3 = boto3.client("s3", region_name=region)
     out_dir = manifest_path.parent
 
     for page_file in manifest["pages"]:
