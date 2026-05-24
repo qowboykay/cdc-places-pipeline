@@ -15,5 +15,5 @@ cdc_places_pipeline:
       database: "{{ env_var('SNOWFLAKE_DATABASE', 'CDC_PLACES') }}"
       warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE') }}"
       role: "{{ env_var('SNOWFLAKE_ROLE', 'DBT_ROLE') }}"
-      schema: STAGING
+      schema: main
       threads: 4
