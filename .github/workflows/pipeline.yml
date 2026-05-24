@@ -52,10 +52,18 @@ jobs:
           echo "stage_path=$stage_path" >> "$GITHUB_OUTPUT"
 
       - name: Load into Snowflake
+        id: snowflake_load
+        shell: bash
         run: |
-          uv run python -m cdc_places_pipeline.cli snowflake-load \
-            --dataset places_county \
-            --stage-path "${{ steps.upload.outputs.stage_path }}"
+          set -euo pipefail
+          load_result=$(
+            uv run python -m cdc_places_pipeline.cli snowflake-load \
+              --dataset places_county \
+              --stage-path "${{ steps.upload.outputs.stage_path }}"
+          )
+          echo "$load_result"
+          row_count=$(echo "$load_result" | awk '{print $2}')
+          echo "row_count=$row_count" >> "$GITHUB_OUTPUT"
 
       - name: dbt build (Snowflake)
         run: |
@@ -63,3 +71,23 @@ jobs:
             --project-dir dbt \
             --profiles-dir dbt \
             --target snowflake
+
+      - name: dbt source freshness
+        run: |
+          uv run dbt source freshness \
+            --project-dir dbt \
+            --profiles-dir dbt \
+            --target snowflake
+
+      - name: Pipeline summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## Pipeline run summary"
+            echo ""
+            echo "| | |"
+            echo "|---|---|"
+            echo "| Stage path | \`${{ steps.upload.outputs.stage_path }}\` |"
+            echo "| Rows loaded | ${{ steps.snowflake_load.outputs.row_count }} |"
+          } >> "$GITHUB_STEP_SUMMARY"

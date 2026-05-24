@@ -6,6 +6,10 @@ sources:
     description: "Raw CDC PLACES data loaded by the Python extract/load pipeline."
     tables:
       - name: places_county
+        loaded_at_field: _loaded_at
+        freshness:
+          warn_after: {count: 8, period: day}
+          error_after: {count: 15, period: day}
         description: >
           County-level public health estimates, CDC PLACES 2025 release.
           229k rows: 3,145 counties x 40 measures x 2 value types

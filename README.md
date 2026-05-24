@@ -3,7 +3,7 @@
 ELT pipeline ingesting CDC PLACES public health data via the Socrata API into Snowflake, transformed with dbt, and surfaced through a Streamlit dashboard.
 
 [![CI](https://github.com/qowboykay/cdc-places-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/qowboykay/cdc-places-pipeline/actions/workflows/ci.yml)
-![Status](https://img.shields.io/badge/status-Phase%205%20complete-green)
+![Status](https://img.shields.io/badge/status-Phase%206%20complete-green)
 
 ---
 
@@ -117,7 +117,7 @@ Open `http://localhost:8501` in your browser.
 | 3 | Streamlit dashboard (DuckDB-backed) | Done |
 | 4 | Promote to AWS + Snowflake | Done |
 | 5 | CI/CD for cloud pipeline | Done |
-| 6 | Performance tuning and monitoring | Pending |
+| 6 | Performance tuning and monitoring | Done |
 | 7 | Polish, docs, tagged release | Pending |
 
 ---
