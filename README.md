@@ -3,13 +3,11 @@
 ELT pipeline ingesting CDC PLACES public health data via the Socrata API into Snowflake, transformed with dbt, and surfaced through a Streamlit dashboard.
 
 [![CI](https://github.com/qowboykay/cdc-places-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/qowboykay/cdc-places-pipeline/actions/workflows/ci.yml)
-![Status](https://img.shields.io/badge/status-Phase%203%20complete-green)
+![Status](https://img.shields.io/badge/status-Phase%205%20complete-green)
 
 ---
 
 ## Architecture
-
-> Full diagram coming in Phase 4. Planned data flow:
 
 ```
 Socrata Open Data API  (data.cdc.gov)
@@ -21,11 +19,13 @@ Socrata Open Data API  (data.cdc.gov)
   Snowflake RAW schema  (COPY INTO via external stage)
         |
         v
-  dbt  (STAGING layer -> MARTS layer)
+  dbt  (STAGING layer -> INTERMEDIATE layer -> MARTS layer)
         |
         v
   Streamlit dashboard  (choropleth maps, KPI cards, filterable tables)
 ```
+
+The pipeline runs automatically every Monday via GitHub Actions and can also be triggered manually from the Actions tab.
 
 ---
 
@@ -47,9 +47,7 @@ Socrata Open Data API  (data.cdc.gov)
 
 ## Setup
 
-> Full setup instructions coming after Phase 1. Quick start below.
-
-**Prerequisites:** Python 3.11+, [uv](https://docs.astral.sh/uv/), AWS credentials, Snowflake account (Phase 4+).
+**Prerequisites:** Python 3.11+, [uv](https://docs.astral.sh/uv/), AWS credentials, Snowflake account.
 
 ```bash
 # Clone and install dependencies
@@ -62,13 +60,23 @@ cp .env.example .env
 
 # Install pre-commit hooks
 uv run pre-commit install
+```
 
-# Run the pipeline (local DuckDB, no cloud required)
+### Run the pipeline locally (DuckDB, no cloud required)
+
+```bash
 uv run python -m cdc_places_pipeline.cli extract --dataset places_county
 uv run python -m cdc_places_pipeline.cli load --dataset places_county
-
-# Run dbt transformations
 uv run dbt build --project-dir dbt --profiles-dir dbt
+```
+
+### Run the pipeline against Snowflake
+
+```bash
+uv run python -m cdc_places_pipeline.cli extract --dataset places_county
+uv run python -m cdc_places_pipeline.cli upload --dataset places_county
+uv run python -m cdc_places_pipeline.cli snowflake-load --dataset places_county --stage-path <dataset_id>/<timestamp>
+uv run dbt build --project-dir dbt --profiles-dir dbt --target snowflake
 ```
 
 ---
@@ -107,8 +115,8 @@ Open `http://localhost:8501` in your browser.
 | 1 | Local extract + load to DuckDB | Done |
 | 2 | dbt transformations (DuckDB target) | Done |
 | 3 | Streamlit dashboard (DuckDB-backed) | Done |
-| 4 | Promote to AWS + Snowflake | Pending |
-| 5 | CI/CD for cloud pipeline | Pending |
+| 4 | Promote to AWS + Snowflake | Done |
+| 5 | CI/CD for cloud pipeline | Done |
 | 6 | Performance tuning and monitoring | Pending |
 | 7 | Polish, docs, tagged release | Pending |
 
