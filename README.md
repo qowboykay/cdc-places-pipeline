@@ -9,21 +9,7 @@ ELT pipeline ingesting CDC PLACES public health data via the Socrata API into Sn
 
 ## Architecture
 
-```
-Socrata Open Data API  (data.cdc.gov)
-        |
-        v
-  AWS S3  (raw JSON, partitioned by dataset + extract timestamp)
-        |
-        v
-  Snowflake RAW schema  (COPY INTO via external stage)
-        |
-        v
-  dbt  (STAGING layer -> INTERMEDIATE layer -> MARTS layer)
-        |
-        v
-  Streamlit dashboard  (choropleth maps, KPI cards, filterable tables)
-```
+![Architecture diagram](docs/architecture.png)
 
 The pipeline runs automatically every Monday via GitHub Actions and can also be triggered manually from the Actions tab.
 
